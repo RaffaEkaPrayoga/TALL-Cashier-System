@@ -1,25 +1,23 @@
 <!-- Modal Structure -->
 <dialog wire:ignore.self class="modal fixed inset-0 z-50  modal-bottom sm:modal-middle bg-opacity-50 flex items-center justify-center" id="productsModal">
-    <div class="modal-dialog bg-white rounded shadow-lg">
-        <div class="modal-content">
-            <div class="modal-header flex justify-between items-center p-4 border-b border-gray-200">
-                <h5 class="text-lg font-semibold" id="productsModalLabel">{{ $title }}</h5>
-                <button type="button" class="btn btn-close" wire:click="cancel">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M6 18L18 6M6 6l12 12"></path>
+    <div class="modal-body modal-box p-4">
+        <div class="modal-header flex justify-between items-center p-4 border-b border-gray-200">
+            <h5 class="text-lg font-semibold" id="productsModalLabel">{{ $title }}</h5>
+            <button type="button" class="btn btn-close" wire:click="cancel">
+                 <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
-                </button>
+            </button>
             </div>
-            <div class="modal-body p-4">
-                <form wire:submit.prevent="save">
-                    <div class="mb-4">
-                        <!-- Product Name -->
-                        <label for="name" class="block text-sm font-medium text-gray-700">Product Name</label>
-                        <input type="text" wire:model.defer="product.name" id="name" class="input input-bordered w-full mt-1"
-                               :class="{'border-red-500': errors['product.name']}">
-                        @error('product.name')
-                            <span class="text-red-500 text-sm">{{ $message }}</span>
-                        @enderror
+            <form wire:submit.prevent="save" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <!-- Product Name -->
+                    <label for="name" class="block text-sm font-medium text-gray-700">Product Name</label>
+                    <input type="text" wire:model.defer="product.name" id="name" class="input input-bordered w-full mt-1"
+                           :class="{'border-red-500': errors['product.name']}">
+                    @error('product.name')
+                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                    @enderror
 
                         <!-- Product Description -->
                         <label for="description" class="block text-sm font-medium text-gray-700 mt-4">Product Description</label>
@@ -70,7 +68,17 @@
                         @error('product.category_id')
                             <span class="text-red-500 text-sm">{{ $message }}</span>
                         @enderror
-                    </div>
+
+                        <label for="image" class="mb-2 block text-sm font-medium text-gray-700 mt-4">Product Image</label>
+                        @if ($product['image'] && is_string($product['image']))
+                            <img src="{{ Storage::url($product['image']) }}" alt="Product Image" class="w-24 h-24 mt-2">
+                        @endif
+                        <input type="file" class="mt-1 file-input file-input-bordered w-full @error('product.image') input-error @enderror"
+                            id="image" wire:model.defer="product.image">
+                        @error('product.image')
+                            <div class="text-red-500 mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>       
 
                     <!-- Submit Button -->
                     <div class="flex justify-end space-x-2">
@@ -84,8 +92,6 @@
                     <div wire:loading class="text-blue-500 mt-2">Processing...</div>
                 </form>
             </div>
-        </div>
-    </div>
 </dialog>
 
 <!-- CKEditor Script -->
