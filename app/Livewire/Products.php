@@ -21,15 +21,6 @@ class Products extends Component
     public $searchTerm = '';
     public $pagination = 5;
 
-    protected $rules = [
-        'product.name' => 'required|string|max:255',
-        'product.description' => 'required|string|max:1000',
-        'product.quantity' => 'required|integer|min:0',
-        'product.price' => 'required|numeric|min:0',
-        'product.category_id' => 'required|exists:categories,id',
-        'product.image' => 'nullable|image|max:1024',
-    ];
-
     public function updatingSearchTerm()
     {
         $this->resetPage();
@@ -52,26 +43,35 @@ class Products extends Component
 
     public function save()
     {
-        $this->validate();
+        // Conditional validation for image only when it's a new file upload
+        $rules = [
+            'product.name' => 'required|string|max:255',
+            'product.description' => 'nullable|string',
+            'product.quantity' => 'required|integer|min:0',
+            'product.price' => 'required|integer|min:0',
+            'product.category_id' => 'required|exists:categories,id',
+        ];
+
+        if (!$this->isEdit || ($this->isEdit && !is_string($this->product['image']))) {
+            $rules['product.image'] = 'nullable|image|mimes:jpg,jpeg,png,gif|max:1024';
+        }
+
+        $this->validate($rules);
 
         if ($this->isEdit) {
-            // Update existing product
             $product = Product::findOrFail($this->product['id']);
 
-            // Check if a new image is uploaded
             if (is_string($this->product['image'])) {
-                // Keep the existing image if the image is a string (no new image uploaded)
                 $this->product['image'] = $product->image;
             } elseif ($this->product['image']) {
-                // If a new image is uploaded, delete the old image if it's not the default
                 if ($product->image && $product->image !== 'images/default.png') {
-                    Storage::delete('public/' . $product->image);
+                    Storage::delete('public/storage/' . $product->image);
                 }
-                // Store new image
                 $imagePath = $this->product['image']->store('images', 'public');
                 $this->product['image'] = $imagePath;
             }
 
+            // Update the product with new data, keeping the image if no new image is uploaded
             $product->update($this->product);
             session()->flash('message', 'Product Successfully Updated.');
         } else {
@@ -95,6 +95,23 @@ class Products extends Component
         return redirect('/products');
     }
 
+        public function edit($id)
+    {
+        $product = Product::findOrFail($id);
+        $this->title = 'Edit Product';
+        $this->product = [
+            'id' => $id,
+            'name' => $product->name,
+            'description' => $product->description, // Cek apakah ada data
+            'quantity' => $product->quantity,
+            'price' => $product->price,
+            'category_id' => $product->category_id,
+            'image' => $product->image,
+        ];
+        $this->isEdit = true;
+        $this->dispatch('editProduct');
+    }
+
 
 
     public function delete($id)
@@ -111,25 +128,6 @@ class Products extends Component
 
         // Delete the product
         $product->delete();
-    }
-
-
-
-    public function edit($id)
-    {
-        $product = Product::findOrFail($id);
-        $this->title = 'Edit Product';
-        $this->product = [
-            'id' => $id,
-            'name' => $product->name,
-            'description' => $product->description, // Cek apakah ada data
-            'quantity' => $product->quantity,
-            'price' => $product->price,
-            'category_id' => $product->category_id,
-            'image' => $product->image,
-        ];
-        $this->isEdit = true;
-        $this->dispatch('editProduct');
     }
 
 
