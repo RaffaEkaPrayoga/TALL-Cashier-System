@@ -71,7 +71,7 @@
 
                         <label for="image" class="mb-2 block text-sm font-medium text-gray-700 mt-4">Product Image</label>
                         @if ($product['image'] && is_string($product['image']))
-                            <img src="{{ Storage::url($product['image']) }}" alt="Product Image" class="w-24 h-24 mt-2">
+                            <img src="{{ Storage::url($product['image']) }}" alt="Product Image" width="30%" class="mt-2">
                         @endif
                         <input type="file" class="mt-1 file-input file-input-bordered w-full @error('product.image') input-error @enderror"
                             id="image" wire:model.defer="product.image">

@@ -65,7 +65,10 @@ class Products extends Component
                 $this->product['image'] = $product->image;
             } elseif ($this->product['image']) {
                 if ($product->image && $product->image !== 'images/default.png') {
-                    Storage::delete('public/storage/' . $product->image);
+                    $filePath = storage_path('app/public/' . $product->image);
+                    if (file_exists($filePath)) {
+                        unlink($filePath);
+                    }
                 }
                 $imagePath = $this->product['image']->store('images', 'public');
                 $this->product['image'] = $imagePath;
