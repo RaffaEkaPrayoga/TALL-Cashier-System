@@ -5,6 +5,8 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\Transaction;
 use Livewire\WithPagination;
+use Mpdf\Mpdf;
+use App\Models\TransactionDetail;
 
 
 class Transactions extends Component
@@ -142,6 +144,30 @@ class Transactions extends Component
         $this->resetPage();
     }
 
+    public function generateReceipt($transactionId)
+    {
+        $transaction = Transaction::findOrFail($transactionId);
+        $transactionDetails = TransactionDetail::where('transaction_id', $transactionId)->with('product')->get();
+
+        // Data untuk struk
+        $data = [
+            'store_name' => 'Minimarket Raffa',
+            'store_address' => 'Jalan Ahmad Dahlan',
+            'store_telepon ' => '08127723443',
+            'transaction' => $transaction,
+            'transactionDetails' => $transactionDetails,
+        ];
+
+        // Buat PDF
+        $pdf = new Mpdf();
+        $html = view('receipt', $data)->render();
+        $pdf->WriteHTML($html);
+
+        // Tampilkan PDF ke browser atau download
+        return response()->streamDownload(function () use ($pdf) {
+            $pdf->Output();
+        }, "receipt-{$transaction->transaction_code}.pdf");
+    }
 
     public function render()
     {
