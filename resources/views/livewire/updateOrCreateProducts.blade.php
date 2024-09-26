@@ -19,22 +19,24 @@
                         <span class="text-red-500 text-sm">{{ $message }}</span>
                     @enderror
 
-                        <!-- Product Description -->
-                        <label for="description" class="block text-sm font-medium text-gray-700 mt-4">Product Description</label>
-                        <div class="prose lg:prose-l" wire:ignore x-data x-init="
-                            ClassicEditor.create($refs.editor)
-                                .then(newEditor => {
-                                    editor = newEditor;
-                                    editor.setData(@this.get('product.description')); // Set initial data
-                                    editor.model.document.on('change:data', () => {
-                                        @this.set('product.description', editor.getData()); // Correct binding to update Livewire
-                                    });
-                                })
-                                .catch(error => {
-                                    console.error(error);
-                                })
-                        ">
-                            <textarea x-ref="editor" class=" form-textarea mt-1 block w-full border-gray-300 rounded-md shadow-sm"></textarea>
+                    <!-- Product Description -->
+                    <label for="description" class="block text-sm font-medium text-gray-700 mt-4">Product Description</label>
+                    <div class="prose lg:prose-xl" wire:ignore x-data="{ content: @entangle('product.description') }" x-init="$nextTick(() => {
+                        ClassicEditor.create($refs.description)
+                            .then(newEditor => {
+                                editor = newEditor;
+                                editor.model.document.on('change:data', () => {
+                                    content = editor.getData();
+                                });
+                    
+                                $watch('content', value => {
+                                    if (value !== editor.getData()) {
+                                        editor.setData(value);
+                                    }
+                                });
+                            });
+                        })">
+                            <textarea x-ref="description" x-model="content" class="textarea textarea-bordered w-full @error('product.description') textarea-error @enderror"></textarea>
                         </div>
                         @error('product.description')
                             <span class="text-red-500 text-sm">{{ $message }}</span>
@@ -96,20 +98,3 @@
 
 <!-- CKEditor Script -->
 <script src="https://cdn.ckeditor.com/ckeditor5/39.0.0/classic/ckeditor.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        Livewire.on('editProduct', () => {
-            if (window.editor) {
-                editor.setData(@this.get('product.description')); // Set CKEditor data from Livewire property
-            }
-        });
-        
-
-        Livewire.on('addProduct', () => {
-            if (window.editor) {
-                // Clear CKEditor value when adding a new product
-                editor.setData('');
-            }
-        });
-    });
-</script>

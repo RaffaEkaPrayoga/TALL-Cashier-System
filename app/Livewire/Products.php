@@ -112,7 +112,6 @@ class Products extends Component
             'image' => $product->image,
         ];
         $this->isEdit = true;
-        $this->dispatch('editProduct');
     }
 
 
