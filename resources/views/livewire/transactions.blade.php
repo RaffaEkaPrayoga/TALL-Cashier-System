@@ -104,10 +104,10 @@
                             <td>Rp.{{ number_format($transaction->kembalian) }}</td>
                             <td>{{ $transaction->status }}</td>
                             <td>
-                                <button class="btn btn-info btn-sm" onclick="transactionModal.showModal()" wire:click="edit({{ $transaction->id }})"><i class="bi bi-pencil-square"></i> Edit</button>
-                                <button type="button" class="btn btn-error btn-sm" onclick="hapus_transactions({{ $transaction->id }})"><i class="bi bi-trash"></i> Delete</button>
-                                <a href="{{ route('transaction.details', $transaction->id) }}" class="btn btn-primary btn-sm"><i class="bi bi-search"></i> Details</a>
-                                <a href="{{ route('transaction.receipt', $transaction->id) }}" target="_blank" class="btn btn-sm btn-primary"><i class="bi bi-printer"></i> Struk</a>
+                                <button class="btn btn-info btn-xs" onclick="transactionModal.showModal()" wire:click="edit({{ $transaction->id }})"><i class="bi bi-pencil-square"></i> Edit</button>
+                                <button type="button" class="btn btn-error btn-xs" onclick="hapus_transactions({{ $transaction->id }})"><i class="bi bi-trash"></i> Delete</button>
+                                <a href="{{ route('transaction.details', $transaction->id) }}" class="btn btn-primary btn-xs"><i class="bi bi-search"></i> Details</a>
+                                <a href="{{ route('transaction.receipt', $transaction->id) }}" target="_blank" class="btn btn-xs btn-primary"><i class="bi bi-printer"></i> Struk</a>
                             </td>
                         </tr>
                     @endforeach
