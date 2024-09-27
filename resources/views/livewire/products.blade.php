@@ -3,7 +3,7 @@
         @include('livewire.UpdateOrCreateProducts')
 
         <div class="card bg-base-100 shadow-md mt-5">
-            <div class="card-header px-4 flex justify-between items-center p-4 mt-2 b gray-200">
+            <div class="card-header px-4 flex justify-between items-center p-2 mt-7 b gray-200">
                 <div class="flex mx-2 my-2 -mb-1 gap-3">
                     <h2 class="text-lg font-bold">Products List</h2>
                     <select class="border border-gray-300 p-1 rounded" wire:model.live="pagination">
@@ -13,57 +13,58 @@
                     </select>
                 </div>
                 <!-- Button to Open Modal -->
-                <button type="button" class="btn btn-primary" onclick="productsModal.showModal()" wire:click="$refresh()">
-                    <i class="bi bi-plus-circle"></i> Add New Product
+                <button type="button" class="btn btn-primary btn-sm md:btn-md" onclick="productsModal.showModal()" wire:click="$refresh()">
+                    <i class="bi bi-plus-circle"></i> <span class="hidden sm:inline">Add New Product</span>
                 </button>
             </div>
-            <div class="card-body -p-4">
+            <div class="card-body">
                 <!-- Search Input -->
                 <form>
-                    <input type="text" wire:model.live="searchTerm" class="input input-bordered w-full" placeholder="Search products..." />
+                    <input type="text" wire:model.live="searchTerm" class="input input-sm md:input-md input-bordered w-full" placeholder="Search products..." />
                 </form>
-
-                <table class="table w-full table-zebra">
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Gambar</th>
-                            <th>Name</th>
-                            <th>Description</th>
-                            <th>Quantity</th>
-                            <th>Price</th>
-                            <th>Category</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($products_read as $product)
-                            <tr wire:key="{{ $product->id }}">
-                                <td>{{ ($products_read->currentPage() - 1) * $products_read->perPage() + $loop->iteration }}</td>
-                                <td><img src="{{ Storage::url($product->image) }}" alt="{{ $product->name }}" width="100%"></td>
-                                <td>{{ $product->name }}</td>
-                                <td class="prose lg:prose-l">{!! $product->description !!}</td>
-                                <td>{{ $product->quantity }}</td>
-                                <td>Rp.{{ number_format($product->price) }}</td>
-                                <td>{{ $product->category->name }}</td>
-                                <td class="flex mt-6 gap-3 me-10">
-                                    <button wire:click="edit({{ $product->id }})" class="btn btn-primary btn-sm" onclick="productsModal.showModal()">
-                                        <i class="bi bi-pencil-square"></i> Edit
-                                    </button>
-                                    <button type="button" class="btn btn-error btn-sm" onclick="hapus_product({{ $product->id }})">
-                                        <i class="bi bi-trash"></i> Delete
-                                    </button>
-                                </td>
-                            </tr>
-                        @empty
+                <div class="overflow-x-auto">
+                    <table class="table w-full table-zebra">
+                        <thead  >
                             <tr>
-                                <td colspan="7" class=" text-center text-red-500">
-                                    <strong>No Products Found!</strong>
-                                </td>
+                                <th>No</th>
+                                <th>Gambar</th>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                                <th>Category</th>
+                                <th>Action</th>
                             </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @forelse ($products_read as $product)
+                                <tr wire:key="{{ $product->id }}">
+                                    <td>{{ ($products_read->currentPage() - 1) * $products_read->perPage() + $loop->iteration }}</td>
+                                    <td><img src="{{ Storage::url($product->image) }}" alt="{{ $product->name }}" width="100%"></td>
+                                    <td>{{ $product->name }}</td>
+                                    <td class="prose">{!! $product->description !!}</td>
+                                    <td>{{ $product->quantity }}</td>
+                                    <td>Rp.{{ number_format($product->price) }}</td>
+                                    <td>{{ $product->category->name }}</td>
+                                    <td class="flex mt-4 gap-3 me-10">
+                                        <button wire:click="edit({{ $product->id }})" class="btn btn-primary btn-sm" onclick="productsModal.showModal()">
+                                            <i class="bi bi-pencil-square"></i> <span class="hidden sm:inline">Edit</span>
+                                        </button>
+                                        <button type="button" class="btn btn-error btn-sm" onclick="hapus_product({{ $product->id }})">
+                                            <i class="bi bi-trash"></i> <span class="hidden sm:inline">Delete</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="7" class=" text-center text-red-500">
+                                        <strong>No Products Found!</strong>
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>   
 
                 <!-- Pagination -->
                 <div class="flex justify-center mt-5 mb-5">
