@@ -60,59 +60,60 @@
         <div class="card-header flex justify-between items-center mt-3 p-4">
             <div class="flex mx-2 my-2 -mb-1 gap-3">
                 <h2 class="text-lg font-bold">Transactions List</h2>
-                <select class="border border-gray-300 p-1 rounded" wire:model.live="pagination">
+                <select class="border border-gray-300 rounded" wire:model.live="pagination">
                     <option value="5">5</option>
                     <option value="10">10</option>
                     <option value="15">15</option>
                 </select>
             </div>
-            <button class="btn btn-primary"  onclick="transactionModal.showModal()">
-                <i class="bi bi-plus-circle"></i> Add New Transaction
+            <button class="btn btn-primary btn-sm md:btn-md"  onclick="transactionModal.showModal()">
+                <i class="bi bi-plus-circle"></i> <span class="hidden sm:inline">Add New Transaction</span>
             </button>
         </div>
         
         <div class="card-body p-4">
-            
+            <!-- Search Input -->
+            <form class="mb-4">
+                <input type="text" wire:model.live="searchTerm" class="input input-sm md:input-md input-bordered w-full mt-1" placeholder="Search Transactions..." />
+            </form>
             <!-- Transactions Table -->
-            <table class="table table-compact w-full mt-1">
-                <!-- Search Input -->
-                <form class="mb-4">
-                    <input type="text" wire:model.live="searchTerm" class="input input-bordered w-full mt-1" placeholder="Search Transactions..." />
-                </form>
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>Transaction Code</th>
-                        <th>Date</th>
-                        <th>Customer</th>
-                        <th>Total Amount</th>
-                        <th>Bayar</th>
-                        <th>Kembalian</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($transactions as $transaction)
+            <div class="overflow-x-auto">
+                <table class="table table-compact w-full mt-1">
+                    <thead>
                         <tr>
-                            <td>{{ ($transactions->currentPage() - 1) * $transactions->perPage() + $loop->iteration }}</td>
-                            <td>{{ $transaction->transaction_code }}</td>
-                            <td>{{ \Carbon\Carbon::parse($transaction->created_at)->format('Y-m-d') }}</td>
-                            <td>{{ $transaction->customer_name }}</td>
-                            <td>Rp.{{ number_format($transaction->total_amount) }}</td>
-                            <td>Rp.{{ number_format($transaction->bayar) }}</td>
-                            <td>Rp.{{ number_format($transaction->kembalian) }}</td>
-                            <td>{{ $transaction->status }}</td>
-                            <td>
-                                <button class="btn btn-info btn-xs" onclick="transactionModal.showModal()" wire:click="edit({{ $transaction->id }})"><i class="bi bi-pencil-square"></i> Edit</button>
-                                <button type="button" class="btn btn-error btn-xs" onclick="hapus_transactions({{ $transaction->id }})"><i class="bi bi-trash"></i> Delete</button>
-                                <a href="{{ route('transaction.details', $transaction->id) }}" class="btn btn-primary btn-xs"><i class="bi bi-search"></i> Details</a>
-                                <a href="{{ route('transaction.receipt', $transaction->id) }}" target="_blank" class="btn btn-xs btn-primary"><i class="bi bi-printer"></i> Struk</a>
-                            </td>
+                            <th>No</th>
+                            <th>Transaction Code</th>
+                            <th>Date</th>
+                            <th>Customer</th>
+                            <th>Total Amount</th>
+                            <th>Bayar</th>
+                            <th>Kembalian</th>
+                            <th>Status</th>
+                            <th>Actions</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach($transactions as $transaction)
+                            <tr>
+                                <td>{{ ($transactions->currentPage() - 1) * $transactions->perPage() + $loop->iteration }}</td>
+                                <td>{{ $transaction->transaction_code }}</td>
+                                <td>{{ \Carbon\Carbon::parse($transaction->created_at)->format('Y-m-d') }}</td>
+                                <td>{{ $transaction->customer_name }}</td>
+                                <td>Rp.{{ number_format($transaction->total_amount) }}</td>
+                                <td>Rp.{{ number_format($transaction->bayar) }}</td>
+                                <td>Rp.{{ number_format($transaction->kembalian) }}</td>
+                                <td>{{ $transaction->status }}</td>
+                                <td class="flex mt-2 gap-3">
+                                    <button class="btn btn-info btn-xs" onclick="transactionModal.showModal()" wire:click="edit({{ $transaction->id }})"><i class="bi bi-pencil-square"></i> <span class="hidden sm:inline">Edit</span></button>
+                                    <button type="button" class="btn btn-error btn-xs" onclick="hapus_transactions({{ $transaction->id }})"><i class="bi bi-trash"></i> <span class="hidden sm:inline">Delete</span></button>
+                                    <a href="{{ route('transaction.details', $transaction->id) }}" class="btn btn-primary btn-xs"><i class="bi bi-search"></i> <span class="hidden sm:inline">Details</span></a>
+                                    <a href="{{ route('transaction.receipt', $transaction->id) }}" target="_blank" class="btn btn-xs btn-primary"><i class="bi bi-printer"></i> <span class="hidden sm:inline">Struk</span></a>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
 
             <!-- Pagination -->
             <div class="mt-4">
