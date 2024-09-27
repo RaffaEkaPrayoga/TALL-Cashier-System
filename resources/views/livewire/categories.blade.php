@@ -2,53 +2,55 @@
     <div class="w-full max-w-4xl">
         @include('livewire.updateOrCreateCategories')
 
-        <div class="card bg-base-100 shadow-md mt-5">
+        <div class="card bg-base-100 shadow-md mt-5 mx-5">
             <div class="card-header px-4 flex justify-between items-center">
-                <div class="flex mx-2 my-12 gap-3">
+                <div class="flex flex-wrap mx-2 my-12 gap-3">
                     <span class="text-lg font-semibold">Categories List</span>
-                    <select class="border border-gray-300 p-1 rounded" wire:model.live="pagination">
+                    <select class="border border-gray-300 rounded" wire:model.live="pagination">
                         <option value="5">5</option>
                         <option value="10">10</option>
                         <option value="15">15</option>
                     </select>
                 </div>
-                <button class="btn btn-primary"  onclick="categoriesModal.showModal()">
-                    <i class="bi bi-plus-circle"></i> Add New Categories
+                <button class="btn btn-primary btn-sm sm:btn-md"  onclick="categoriesModal.showModal()">
+                    <i class="bi bi-plus-circle"></i> <span class="hidden sm:inline">Add New Categories</span>
                 </button>
             </div>
 
             <div class="card-body px-4 py-2 -mt-6">
                 <!-- Search Input -->
                 <form>
-                    <input type="text" wire:model.live="searchTerm" class="input input-bordered mb-3 w-full" placeholder="Search categories..." />
+                    <input type="text" wire:model.live="searchTerm" class="input input-sm md:input-md input-bordered mb-3 w-full" placeholder="Search categories..." />
                 </form>
-                <table class="table w-full table-zebra">
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Name</th>
-                            <th>Description</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($categories_read as $categories)
-                        <tr>
-                            <td>{{ ($categories_read->currentPage() - 1) * $categories_read->perPage() + $loop->iteration }}</td>
-                            <td>{{ $categories->name }}</td>
-                            <td class="prose lg:prose-l">{!! $categories->description !!}</td>
-                            <td>
-                                <button wire:click="edit({{ $categories->id }})" class="btn btn-primary btn-sm" onclick="categoriesModal.showModal()">
-                                    <i class="bi bi-pencil-square"></i> Edit
-                                </button>
-                                <button type="button" class="btn btn-error btn-sm" onclick="hapus_category({{ $categories->id }})">
-                                    <i class="bi bi-trash"></i> Delete
-                                </button>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                <div class="overflow-x-auto">
+                    <table class="table w-full table-zebra">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($categories_read as $categories)
+                            <tr>
+                                <td>{{ ($categories_read->currentPage() - 1) * $categories_read->perPage() + $loop->iteration }}</td>
+                                <td>{{ $categories->name }}</td>
+                                <td class="prose lg:prose-l">{!! $categories->description !!}</td>
+                                <td class="flex gap-3">
+                                    <button wire:click="edit({{ $categories->id }})" class="btn btn-primary btn-sm mt-1" onclick="categoriesModal.showModal()">
+                                        <i class="bi bi-pencil-square"></i> <span class="hidden sm:inline">Edit</span>
+                                    </button>
+                                    <button type="button" class="btn btn-error btn-sm mt-1" onclick="hapus_category({{ $categories->id }})">
+                                        <i class="bi bi-trash"></i> <span class="hidden sm:inline">Delete</span>
+                                    </button>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
 
                 <!-- Pagination -->
                 <div class="flex justify-center mt-5 mb-5">
