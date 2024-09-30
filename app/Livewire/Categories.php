@@ -18,7 +18,7 @@ class Categories extends Component
     public $title = 'Add New Category';
     public $shouldCloseModal = false;
     public $pagination= 5;
-
+    public $isAllFieldsFilled = false;
 
     protected $rules = [
         'categories.*.name' => 'required|string|max:255',
@@ -48,12 +48,32 @@ class Categories extends Component
         $this->category = ['name' => '', 'description' => ''];
         $this->isEdit = false;
         $this->shouldCloseModal = true; 
+        $this->isAllFieldsFilled = false; // Reset when fields are reset
     }
 
+    public function checkIfAllFieldsFilled()
+    {
+        $this->isAllFieldsFilled = true;
+        foreach ($this->categories as $category) {
+            if (empty($category['name']) || empty($category['description'])) {
+                $this->isAllFieldsFilled = false;
+                break;
+            }
+        }
+    }
+
+    public function updated($field)
+    {
+        $this->checkIfAllFieldsFilled();
+    }
 
     public function addForm()
     {
-        $this->categories[] = ['name' => '', 'description' => ''];
+        if ($this->isAllFieldsFilled) {
+            $this->categories[] = ['name' => '', 'description' => ''];
+        } else {
+            session()->flash('error', 'Please complete the existing form before adding a new one.');
+        }
     }
 
 
@@ -61,6 +81,7 @@ class Categories extends Component
     {
         unset($this->categories[$key]);
         $this->categories = array_values($this->categories);
+        $this->checkIfAllFieldsFilled();
     }
 
 
@@ -122,6 +143,7 @@ class Categories extends Component
             ->latest()
             ->paginate($this->pagination);
 
+        $this->checkIfAllFieldsFilled();
 
         return view('livewire.categories', ['categories_read' => $categories_read]);
     }

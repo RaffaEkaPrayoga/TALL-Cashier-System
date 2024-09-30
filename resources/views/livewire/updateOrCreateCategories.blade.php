@@ -55,37 +55,61 @@
 
                             <!-- categories Description -->
                             <label for="description_{{ $key }}" class="mb-2  block text-sm font-medium text-gray-700 mt-4">Category Description</label>
-                            <div class="prose lg:prose-l" wire:ignore x-data="{ description: '{{ $categories['description'] ?? '' }}' }" x-init="
-                                ClassicEditor.create($refs.editor_{{ $key }})
-                                    .then(newEditor => {
-                                        editor = newEditor;
-                                        editor.model.document.on('change:data', () => {
-                                            @this.set('categories.{{ $key }}.description', editor.getData());
-                                        });
-                                    })
-                                    .catch(error => {
-                                        console.error(error);
-                                    })
+                            <div class="col-md-12 prose lg:prose-l" wire:ignore x-data x-init="
+                                ClassicEditor
+                                .create($refs['editor{{ $key }}'])
+                                .then(editor => {
+                                    editor.model.document.on('change:data', () => {
+                                        @this.set('categories.{{ $key }}.description', editor.getData());
+                                    });
+                                })
+                                .catch(error => {
+                                    console.error(error);
+                                });
                             ">
-                                <textarea x-ref="editor_{{ $key }}" class="textarea textarea-bordered w-full mt-1">{{ $categories['description'] ?? '' }}</textarea>
+                                <textarea x-ref="editor{{ $key }}" wire:model.defer="categories.{{ $key }}.description" class="form-control" rows="4"></textarea>
                             </div>
                             @error('categories.' . $key . '.description')
                                 <span class="text-red-500 text-sm">{{ $message }}</span>
                             @enderror
 
                             <!-- Remove Button -->
-                            <button type="button" class="btn btn-error mt-2" wire:click="removeCategories({{ $key }})">
-                                <i class="bi bi-trash"></i> Remove
-                            </button>
+                            @if ($key === count($categories) - 1) 
+                                <button type="button" class="btn btn-error mt-2" wire:click="removeCategories({{ $key }})">
+                                    <i class="bi bi-trash"></i> Remove
+                                </button>
+                            @endif
                         </div>
+                        @if($key < count($categories) - 1)
+                            <hr class="my-4 border-b">
+                        @endif
                     @endforeach
                 @endif
 
                 <!-- Conditional Add New categories Button -->
                 @if(!$isEdit)
-                    <button type="button" class="btn btn-info mb-3" wire:click="addForm">
-                        <i class="bi bi-plus-circle"></i>Add New categories
-                    </button>
+                    <div x-data="{
+                        isAllFieldsFilled: false,
+                        checkFields() {
+                            this.isAllFieldsFilled = true;
+                            @this.categories.forEach((category, index) => {
+                                if (!category.name || !category.description) {
+                                    this.isAllFieldsFilled = false;
+                                }
+                            });
+                        }
+                    }"
+                    x-init="$watch('$wire.categories', () => checkFields())">
+                        <button type="button"
+                                class="mb-3"
+                                :class="{
+                                    'btn btn-base-600': !isAllFieldsFilled,
+                                    'btn btn-info': isAllFieldsFilled
+                                }"
+                                @click="if(isAllFieldsFilled) $wire.addForm()">
+                            <i class="bi bi-plus-circle"></i> Add New Categories
+                        </button>
+                    </div>
                 @endif
 
                 <!-- Submit Button -->
