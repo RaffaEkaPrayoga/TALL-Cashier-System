@@ -11,6 +11,7 @@
 </head>
 <body class="bg-gray-100">
     <div class="container min-h-screen">
+        @unless (request()->routeIs('login') || request()->routeIs('auth.register'))
         <nav class="bg-base-100 shadow-[0_4px_10px_rgba(0,255,255,0.5)] ">
             <div class="container mx-auto px-4 py-5 flex justify-between items-center">
                 <!-- Logo or Brand Name -->
@@ -30,6 +31,7 @@
                     <a href="{{ route('transactions.index') }}" class="{{ request()->routeIs('transactions.index') ? 'text-primary' : '' }}" wire:navigate>Transactions</a>
                     <a href="{{ route('livewire.categories') }}" class="{{ request()->routeIs('livewire.categories') ? 'text-primary' : '' }}" wire:navigate>Categories</a>
                     <a href="{{ route('livewire.products') }}" class="{{ request()->routeIs('livewire.products') ? 'text-primary' : '' }}" wire:navigate>Products</a>
+                    <livewire:admin.logout/>
                 </div>
             </div>
     
@@ -45,10 +47,12 @@
                         <li><a href="{{ route('transactions.index') }}" class="{{ request()->routeIs('transactions.index') ? 'text-primary' : '' }}" wire:navigate>Transactions</a></li>
                         <li><a href="{{ route('livewire.categories') }}" class="{{ request()->routeIs('livewire.categories') ? 'text-primary' : '' }}" wire:navigate>Categories</a></li>
                         <li><a href="{{ route('livewire.products') }}" class="{{ request()->routeIs('livewire.products') ? 'text-primary' : '' }}" wire:navigate>Products</a></li>
+                        <livewire:admin.logout/>
                     </ul>
                 </div>
             </div>
         </nav>
+        @endunless
         {{ $slot }}
     </div>
 
