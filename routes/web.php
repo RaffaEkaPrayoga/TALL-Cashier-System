@@ -7,12 +7,14 @@ use App\Livewire\Transactions;
 use App\Livewire\TransactionDetails;
 use App\Livewire\PaymentTransaction;
 use App\Livewire\Auth\Login;
+use App\Livewire\Auth\Register;
 
 Route::group(['middleware' => 'guest'], function () {
     Route::get('/', function () {
         return view('auth.login');
     });
     Route::get('/login', Login::class)->name('login');
+    Route::get('/register', Register::class)->name('auth.register');
 });
 
 Route::group(['middleware' => 'auth'], function () {
