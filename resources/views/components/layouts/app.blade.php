@@ -66,6 +66,16 @@
             });
         });
     </script>
+    @elseif (session()->has('error'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: '{{ session('error') }}',
+            });
+        });
+    </script>
     @endif
     <script>
         document.getElementById('hamburger-button').addEventListener('click', () => {
