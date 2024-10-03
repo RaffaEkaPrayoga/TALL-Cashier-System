@@ -28,6 +28,7 @@
     
                 <!-- Navigation Menu (for large screens) -->
                 <div class="hidden lg:flex flex-grow justify-end items-center space-x-4">
+                    <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'text-primary' : '' }}" wire:navigate>Dashboard</a>
                     <a href="{{ route('transactions.index') }}" class="{{ request()->routeIs('transactions.index') ? 'text-primary' : '' }}" wire:navigate>Transactions</a>
                     <a href="{{ route('livewire.categories') }}" class="{{ request()->routeIs('livewire.categories') ? 'text-primary' : '' }}" wire:navigate>Categories</a>
                     <a href="{{ route('livewire.products') }}" class="{{ request()->routeIs('livewire.products') ? 'text-primary' : '' }}" wire:navigate>Products</a>
@@ -44,6 +45,7 @@
                         </svg>
                     </button>
                     <ul class="menu p-2">
+                        <li><a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'text-primary' : '' }}" wire:navigate>Dashboard</a></li>
                         <li><a href="{{ route('transactions.index') }}" class="{{ request()->routeIs('transactions.index') ? 'text-primary' : '' }}" wire:navigate>Transactions</a></li>
                         <li><a href="{{ route('livewire.categories') }}" class="{{ request()->routeIs('livewire.categories') ? 'text-primary' : '' }}" wire:navigate>Categories</a></li>
                         <li><a href="{{ route('livewire.products') }}" class="{{ request()->routeIs('livewire.products') ? 'text-primary' : '' }}" wire:navigate>Products</a></li>

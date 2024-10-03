@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Admin\Dashboard;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Categories;
 use App\Livewire\Products;
@@ -18,6 +19,10 @@ Route::group(['middleware' => 'guest'], function () {
 });
 
 Route::group(['middleware' => 'auth'], function () {
+    Route::get('/', function () {
+        return redirect()->route('admin.dashboard');
+    });
+    Route::get('/dashboard', Dashboard::class)->name('admin.dashboard');
     Route::get('/categories', Categories::class)->name('livewire.categories');
     Route::get('/products', Products::class)->name('livewire.products');
     Route::get('/transactions', Transactions::class)->name('transactions.index');
